@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/OfflineAuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { supabase } from '@/integrations/supabase/client';
+import { signUp as offlineSignUp } from '@/lib/offlineAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -91,14 +91,12 @@ export default function Login() {
     setSignupLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('signup', {
-        body: {
-          email: signupEmail,
-          password: signupPassword,
-          username: signupUsername,
-          full_name: signupFullName || signupUsername,
-        },
-      });
+      const { user, error } = await offlineSignUp(
+        signupEmail,
+        signupPassword,
+        signupUsername,
+        signupFullName || signupUsername
+      );
 
       if (error) throw error;
 

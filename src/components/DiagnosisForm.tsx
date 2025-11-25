@@ -6,10 +6,11 @@ import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { performDiagnosis, DiagnosisResult, RedFlagAlert } from '@/lib/aiDiagnosis';
+import { offlineDB, generateId } from '@/lib/offlineStorage';
+import { useAuth } from '@/contexts/OfflineAuthContext';
 
 interface DiagnosisFormProps {
   onDiagnosisComplete: (results: {
@@ -30,6 +31,7 @@ interface Patient {
 
 export function DiagnosisForm({ onDiagnosisComplete }: DiagnosisFormProps) {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [selectedPatient, setSelectedPatient] = useState('');
@@ -47,17 +49,14 @@ export function DiagnosisForm({ onDiagnosisComplete }: DiagnosisFormProps) {
   }, []);
   
   const loadPatients = async () => {
-    const { data, error } = await supabase
-      .from('patients')
-      .select('id, name, age, sex')
-      .order('created_at', { ascending: false });
-    
-    if (error) {
+    try {
+      const data = await offlineDB.getAll('patients');
+      setPatients(data.sort((a, b) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      ));
+    } catch (error) {
       console.error('Error loading patients:', error);
-      return;
     }
-    
-    setPatients(data || []);
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -83,32 +82,29 @@ export function DiagnosisForm({ onDiagnosisComplete }: DiagnosisFormProps) {
       const results = await performDiagnosis(formData.symptoms, vitals);
       
       // Save encounter to database
-      const { data: encounterData, error: encounterError } = await supabase
-        .from('encounters')
-        .insert({
-          patient_id: selectedPatient,
-          symptoms: formData.symptoms,
-          temperature: vitals.temperature || null,
-          blood_pressure_systolic: vitals.bpSystolic || null,
-          blood_pressure_diastolic: vitals.bpDiastolic || null,
-          spo2: vitals.spo2 || null,
-          pulse: vitals.pulse || null,
-          diagnosis_result: results.diagnoses as any,
-          red_flags: results.redFlags as any,
-          triage_instructions: results.diagnoses[0]?.triage || null,
-          created_by: (await supabase.auth.getUser()).data.user?.id,
-        })
-        .select()
-        .single();
-      
-      if (encounterError) throw encounterError;
+      const encounterId = generateId();
+      await offlineDB.add('encounters', {
+        id: encounterId,
+        patient_id: selectedPatient,
+        symptoms: formData.symptoms,
+        temperature: vitals.temperature,
+        blood_pressure_systolic: vitals.bpSystolic,
+        blood_pressure_diastolic: vitals.bpDiastolic,
+        spo2: vitals.spo2,
+        pulse: vitals.pulse,
+        diagnosis_result: results.diagnoses,
+        red_flags: results.redFlags,
+        triage_instructions: results.diagnoses[0]?.triage || undefined,
+        created_by: user?.id || '',
+        created_at: new Date().toISOString()
+      });
       
       toast.success(t('diagnosisSaved'));
       
       onDiagnosisComplete({
         ...results,
         patientId: selectedPatient,
-        encounterId: encounterData?.id,
+        encounterId,
         vitals,
       });
       
