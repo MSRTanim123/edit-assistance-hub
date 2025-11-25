@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/OfflineAuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Trash2, UserPlus } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { offlineDB, generateId } from '@/lib/offlineStorage';
 
 interface UserProfile {
   id: string;
@@ -32,6 +32,7 @@ export default function AdminPanel() {
   const [creating, setCreating] = useState(false);
   const { t } = useLanguage();
   const { toast } = useToast();
+  const { user: currentUser } = useAuth();
 
   useEffect(() => {
     fetchUsers();
@@ -39,28 +40,14 @@ export default function AdminPanel() {
 
   const fetchUsers = async () => {
     try {
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select('*');
-
-      if (profilesError) throw profilesError;
-
-      // Fetch roles for each user
-      const usersWithRoles = await Promise.all(
-        (profiles || []).map(async (profile) => {
-          const { data: roleData } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', profile.id)
-            .single();
-
-          return {
-            ...profile,
-            role: roleData?.role || 'user',
-          };
-        })
-      );
-
+      const allUsers = await offlineDB.getAll('users');
+      const usersWithRoles: UserProfile[] = allUsers.map(user => ({
+        id: user.id,
+        username: user.username,
+        full_name: user.full_name,
+        email: user.email,
+        role: user.role as 'admin' | 'user',
+      }));
       setUsers(usersWithRoles);
     } catch (error: any) {
       toast({
@@ -78,26 +65,31 @@ export default function AdminPanel() {
     setCreating(true);
 
     try {
-      // Create user via edge function
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          username,
-          full_name: fullName,
-          role,
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to create user');
+      // Validate inputs
+      if (!email || !password || !username) {
+        throw new Error('Email, password, and username are required');
       }
+
+      if (password.length < 6) {
+        throw new Error('Password must be at least 6 characters');
+      }
+
+      // Check if user already exists
+      const existingUsers = await offlineDB.getAll('users');
+      if (existingUsers.some(u => u.email === email)) {
+        throw new Error('User with this email already exists');
+      }
+
+      // Create new user
+      const newUserId = generateId();
+      await offlineDB.add('users', {
+        id: newUserId,
+        email,
+        password,
+        username,
+        full_name: fullName || username,
+        role,
+      });
 
       toast({
         title: 'Success',
@@ -127,20 +119,18 @@ export default function AdminPanel() {
   const handleDeleteUser = async (userId: string) => {
     if (!confirm('Are you sure you want to delete this user?')) return;
 
-    try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-        },
-        body: JSON.stringify({ user_id: userId }),
+    // Prevent self-deletion
+    if (userId === currentUser?.id) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Cannot delete your own account',
       });
+      return;
+    }
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to delete user');
-      }
+    try {
+      await offlineDB.delete('users', userId);
 
       toast({
         title: 'Success',
@@ -266,6 +256,9 @@ export default function AdminPanel() {
                               {user.full_name && (
                                 <div className="text-sm text-muted-foreground">{user.full_name}</div>
                               )}
+                              {user.email && (
+                                <div className="text-xs text-muted-foreground">{user.email}</div>
+                              )}
                             </div>
                           </TableCell>
                           <TableCell>
@@ -278,6 +271,7 @@ export default function AdminPanel() {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleDeleteUser(user.id)}
+                              disabled={user.id === currentUser?.id}
                             >
                               <Trash2 className="w-4 h-4 text-destructive" />
                             </Button>
