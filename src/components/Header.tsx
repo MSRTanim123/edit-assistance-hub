@@ -1,5 +1,5 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/OfflineAuthContext';
 import { Button } from './ui/button';
 import { Activity, LogOut, Settings, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';

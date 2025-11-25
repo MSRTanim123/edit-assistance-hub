@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/OfflineAuthContext';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { offlineDB, generateId } from '@/lib/offlineStorage';
 
 interface PatientFormProps {
   onSuccess?: () => void;
@@ -32,17 +32,15 @@ export function PatientForm({ onSuccess }: PatientFormProps) {
     setLoading(true);
     
     try {
-      const { error } = await supabase.from('patients').insert({
+      await offlineDB.add('patients', {
+        id: generateId(),
         name: formData.name,
         age: parseInt(formData.age),
         sex: formData.sex,
-        weight: formData.weight ? parseFloat(formData.weight) : null,
-        village: formData.village || null,
-        phone: formData.phone || null,
-        created_by: user?.id,
+        contact: formData.phone || '',
+        address: formData.village || '',
+        created_at: new Date().toISOString()
       });
-      
-      if (error) throw error;
       
       toast.success(t('patientRegistered'));
       setFormData({
