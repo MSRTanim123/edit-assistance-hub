@@ -1,0 +1,22 @@
+project_id = "hexzxewdriobginnhefz"
+
+[functions.create-user]
+verify_jwt = true
+
+[functions.delete-user]
+verify_jwt = true
+
+[functions.init-admin]
+verify_jwt = false
+
+[functions.signup]
+verify_jwt = false
+
+[functions.create-video-room]
+verify_jwt = true
+
+[functions.get-video-token]
+verify_jwt = true
+
+[functions.update-video-status]
+verify_jwt = true

@@ -1,0 +1,110 @@
+[
+  {
+    "id": "malaria",
+    "name": "Malaria",
+    "symptom_text": "high fever chills sweating headache body pain nausea vomiting weakness fatigue cyclical fever pattern rigors",
+    "red_flags": ["High fever >103°F", "Altered consciousness", "Severe anemia", "Jaundice"],
+    "triage": "URGENT: Start antimalarial immediately. Check for cerebral malaria signs. Monitor vitals every 2 hours. Refer if severe symptoms.",
+    "medications": ["Artemisinin combination therapy (ACT)", "Primaquine", "Supportive care"],
+    "contraindications": ["Avoid chloroquine in resistant areas", "G6PD deficiency for primaquine"]
+  },
+  {
+    "id": "dengue",
+    "name": "Dengue Fever",
+    "symptom_text": "high fever sudden onset severe headache pain behind eyes muscle pain joint pain rash bleeding gums nausea vomiting abdominal pain",
+    "red_flags": ["Platelet count <50000", "Bleeding manifestations", "Severe abdominal pain", "Persistent vomiting", "Shock"],
+    "triage": "MONITOR CLOSELY: Check platelet count. Hydrate aggressively. Watch for warning signs. Refer immediately if bleeding or shock.",
+    "medications": ["Paracetamol for fever", "IV fluids", "Platelet monitoring"],
+    "contraindications": ["NEVER give aspirin or NSAIDs", "Can cause severe bleeding"]
+  },
+  {
+    "id": "typhoid",
+    "name": "Typhoid Fever",
+    "symptom_text": "sustained fever gradual onset weakness fatigue headache abdominal pain constipation or diarrhea rose spots rash loss of appetite",
+    "red_flags": ["Fever >104°F for >3 days", "Severe abdominal pain", "Altered mental status", "Intestinal bleeding"],
+    "triage": "START ANTIBIOTICS: Blood culture if possible. Monitor temperature. Ensure hydration. Refer if complications suspected.",
+    "medications": ["Ceftriaxone", "Azithromycin", "Ciprofloxacin (if sensitive)"],
+    "contraindications": ["Antibiotic resistance common", "Complete full course"]
+  },
+  {
+    "id": "tb_suspect",
+    "name": "Tuberculosis (Suspect)",
+    "symptom_text": "chronic cough more than 2 weeks fever night sweats weight loss loss of appetite fatigue chest pain coughing blood hemoptysis",
+    "red_flags": ["Coughing blood", "Weight loss >10%", "Fever >2 weeks", "HIV positive"],
+    "triage": "REFER FOR TESTING: Arrange sputum test. Isolate if possible. Start symptom management. Contact tracing needed. DOTS program referral.",
+    "medications": ["Refer for DOTS regimen", "Symptomatic treatment", "Nutritional support"],
+    "contraindications": ["Do not start TB drugs without confirmation", "Ensure compliance with DOTS"]
+  },
+  {
+    "id": "pneumonia",
+    "name": "Acute Respiratory Infection / Pneumonia",
+    "symptom_text": "cough fever chest pain difficulty breathing rapid breathing shortness of breath sputum production chills fatigue decreased oxygen",
+    "red_flags": ["SpO2 <90%", "Respiratory rate >30", "Severe chest pain", "Confusion", "Cyanosis"],
+    "triage": "URGENT IF SEVERE: Start oxygen if SpO2 low. Begin antibiotics. Monitor respiratory rate. Refer if worsening or SpO2 <90%.",
+    "medications": ["Amoxicillin", "Azithromycin", "Oxygen therapy", "Bronchodilators if wheezing"],
+    "contraindications": ["Avoid cough suppressants if productive cough"]
+  },
+  {
+    "id": "dehydration",
+    "name": "Severe Dehydration",
+    "symptom_text": "diarrhea vomiting dry mouth decreased urination sunken eyes lethargy weakness dizziness rapid heartbeat low blood pressure",
+    "red_flags": ["Severe weakness", "Unable to drink", "No urine output", "Altered consciousness", "Shock signs"],
+    "triage": "IMMEDIATE: Start ORS or IV fluids. Monitor urine output. Check electrolytes. Refer if unable to rehydrate orally or shock present.",
+    "medications": ["ORS solution", "IV normal saline or Ringer's lactate", "Zinc supplementation"],
+    "contraindications": ["Avoid plain water only", "Monitor potassium levels"]
+  },
+  {
+    "id": "diarrheal_disease",
+    "name": "Acute Diarrheal Disease",
+    "symptom_text": "loose stools frequent bowel movements abdominal cramps nausea vomiting fever mild dehydration",
+    "red_flags": ["Blood in stool", "High fever", "Severe dehydration", "Duration >3 days"],
+    "triage": "HYDRATE: Start ORS. Continue feeding. Monitor for dehydration. Zinc for children. Refer if bloody diarrhea or severe dehydration.",
+    "medications": ["ORS", "Zinc (for children)", "Antibiotics only if dysentery"],
+    "contraindications": ["Avoid anti-diarrheal drugs in children", "No antibiotics unless bacterial dysentery"]
+  },
+  {
+    "id": "asthma_exacerbation",
+    "name": "Asthma Exacerbation",
+    "symptom_text": "wheezing difficulty breathing chest tightness cough shortness of breath rapid breathing anxiety cannot complete sentences",
+    "red_flags": ["SpO2 <90%", "Unable to speak", "Severe distress", "Cyanosis", "Silent chest"],
+    "triage": "URGENT: Give bronchodilator immediately. Start oxygen if needed. Oral/IV steroids. Refer if no improvement or severe.",
+    "medications": ["Salbutamol inhaler/nebulizer", "Prednisolone oral", "Oxygen", "IV hydrocortisone if severe"],
+    "contraindications": ["Do not sedate", "Avoid beta-blockers"]
+  },
+  {
+    "id": "wound_infection",
+    "name": "Wound Infection / Cellulitis",
+    "symptom_text": "redness swelling warmth pain pus discharge fever wound spreading redness tender to touch",
+    "red_flags": ["Rapidly spreading redness", "Fever >101°F", "Black tissue", "Foul smell", "Systemic symptoms"],
+    "triage": "START ANTIBIOTICS: Clean wound. Drain abscess if present. Tetanus prophylaxis. Monitor for spreading. Refer if necrotizing or systemic.",
+    "medications": ["Amoxicillin-clavulanate", "Cephalexin", "Tetanus toxoid", "Pain management"],
+    "contraindications": ["Ensure tetanus status updated", "Check for penicillin allergy"]
+  },
+  {
+    "id": "anemia",
+    "name": "Anemia (Severe)",
+    "symptom_text": "weakness fatigue pale skin pale conjunctiva shortness of breath dizziness rapid heartbeat cold hands feet headache",
+    "red_flags": ["Hb <7 g/dL", "Chest pain", "Severe weakness", "Heart failure signs"],
+    "triage": "REFER IF SEVERE: Iron supplementation. Nutritional counseling. Check for bleeding source. Transfusion if Hb very low. Treat underlying cause.",
+    "medications": ["Iron supplements (ferrous sulfate)", "Folic acid", "Vitamin B12 if indicated"],
+    "contraindications": ["Avoid iron if infection present", "Check for thalassemia before starting"]
+  },
+  {
+    "id": "uti",
+    "name": "Urinary Tract Infection",
+    "symptom_text": "burning urination frequent urination urgency lower abdominal pain cloudy urine foul smell fever back pain",
+    "red_flags": ["High fever", "Severe back pain", "Vomiting", "Pregnancy", "Unable to urinate"],
+    "triage": "START ANTIBIOTICS: Hydrate well. Pain management. Monitor temperature. Refer if pyelonephritis suspected or pregnancy.",
+    "medications": ["Nitrofurantoin", "Ciprofloxacin", "Trimethoprim-sulfamethoxazole", "Pain relief"],
+    "contraindications": ["Avoid nitrofurantoin if kidney disease", "Adjust for pregnancy"]
+  },
+  {
+    "id": "heat_stroke",
+    "name": "Heat Stroke / Heat Exhaustion",
+    "symptom_text": "high body temperature confusion altered mental status hot dry skin or heavy sweating headache dizziness nausea rapid heartbeat",
+    "red_flags": ["Temperature >104°F", "Confusion", "Seizures", "Loss of consciousness"],
+    "triage": "EMERGENCY: Cool immediately. Move to shade. Remove excess clothing. Apply cool water. IV fluids. Monitor temperature continuously. REFER URGENTLY.",
+    "medications": ["IV normal saline", "Cooling measures", "Monitor electrolytes"],
+    "contraindications": ["Do not give antipyretics for heat stroke", "Cool first, then transport"]
+  }
+]

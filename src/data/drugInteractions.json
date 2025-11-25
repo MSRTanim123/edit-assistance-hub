@@ -1,0 +1,62 @@
+[
+  {
+    "drug1": "aspirin",
+    "drug2": "warfarin",
+    "severity": "severe",
+    "warning": "Increased bleeding risk. Avoid concurrent use."
+  },
+  {
+    "drug1": "paracetamol",
+    "drug2": "warfarin",
+    "severity": "moderate",
+    "warning": "May increase warfarin effect. Monitor INR."
+  },
+  {
+    "drug1": "ciprofloxacin",
+    "drug2": "theophylline",
+    "severity": "severe",
+    "warning": "Increases theophylline levels. Risk of toxicity."
+  },
+  {
+    "drug1": "metformin",
+    "drug2": "contrast_dye",
+    "severity": "severe",
+    "warning": "Risk of lactic acidosis. Stop metformin before CT scan."
+  },
+  {
+    "drug1": "ace_inhibitor",
+    "drug2": "nsaid",
+    "severity": "moderate",
+    "warning": "Reduced antihypertensive effect. Monitor BP and kidney function."
+  },
+  {
+    "drug1": "beta_blocker",
+    "drug2": "insulin",
+    "severity": "moderate",
+    "warning": "May mask hypoglycemia symptoms. Monitor glucose carefully."
+  },
+  {
+    "drug1": "amoxicillin",
+    "drug2": "oral_contraceptive",
+    "severity": "moderate",
+    "warning": "May reduce contraceptive efficacy. Use backup method."
+  },
+  {
+    "drug1": "primaquine",
+    "drug2": "g6pd_deficiency",
+    "severity": "severe",
+    "warning": "CONTRAINDICATED in G6PD deficiency. Risk of severe hemolysis."
+  },
+  {
+    "drug1": "aspirin",
+    "drug2": "dengue",
+    "severity": "severe",
+    "warning": "NEVER use in dengue. Increases bleeding risk significantly."
+  },
+  {
+    "drug1": "nsaid",
+    "drug2": "dengue",
+    "severity": "severe",
+    "warning": "AVOID in dengue. Can cause bleeding complications."
+  }
+]
